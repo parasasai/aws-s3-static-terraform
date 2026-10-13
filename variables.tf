@@ -7,6 +7,6 @@ variable "aws_region" {
 variable "bucket_name" {
   description  = "globally Unique s3 bucket name"
   type         = string 
-  default      = "my-static-site-host-9989202218"
+  default      = "my-static-site-host-627744449233"
  }
  

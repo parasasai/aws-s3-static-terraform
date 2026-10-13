@@ -22,30 +22,30 @@ resource "aws_s3_bucket" "website" {
 }
 
 resource "aws_s3_bucket_public_access_block" "bucket" {
-  bucket                 = aws_s3_bucket.website.id
-  block_public_acls      = false
-  block_public_policy    = false
-  ingore_public_acls     = false
-  restrict_public_bucket = false
+  bucket                  = aws_s3_bucket.website.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
 resource "aws_s3_bucket_website_configuration" "website" {
   bucket = aws_s3_bucket.website.id
 
   index_document {
-    sufffix = "index.html"
+    suffix = "index.html"
     }
 
-  error_docuement {
+  error_document {
     key = "error.html"
     }
 }
 
-resource "aws_s3_bucket_policy" "public_read" {
+resource "aws_s3_bucket_policy" "website" {
   bucket = aws_s3_bucket.website.id
-  depends_on = [aws_s3_bucket_public_access_block.website]
+  depends_on = [aws_s3_bucket_public_access_block.bucket]
   policy = jsonencode({
-    Version = "2026-10-13"
+    Version = "2012-10-17"
     Statement = [
     {
       Sid       = "PublicReadGetObject"
@@ -60,10 +60,11 @@ resource "aws_s3_bucket_policy" "public_read" {
 }
 
 resource "aws_s3_object" "index" {
-  bucket = aws_s3_bucket.website.id
-  key    = "index.html"
-  source = "${path.module}/website/index.html"
-  etag   = filemd5("${path.module}/website/index.html")
+  bucket         = aws_s3_bucket.website.id
+  key            = "index.html"
+  source         = "${path.module}/website/index.html"
+  content_type   = "text/html"
+  etag           = filemd5("${path.module}/website/index.html")
 }
 
 resource "aws_s3_object" "error" {
